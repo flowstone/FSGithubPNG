@@ -8,4 +8,4 @@ charset-normalizer
 idna
 urllib3
 wheel
-PIL
+pillow
