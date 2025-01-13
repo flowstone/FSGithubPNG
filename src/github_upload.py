@@ -8,8 +8,10 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QLabel, QFileDialog, QTextEdit, QInputDialog, QWidget, QSpacerItem,
     QSizePolicy
 )
-from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
 
+from src.const.fs_constants import FsConstants
+from src.util.common_util import CommonUtil
 from src.util.config_util import ConfigUtil
 
 from src.widget.custom_progress_widget import CustomProgressBar
@@ -86,6 +88,14 @@ class GitHubImageUploader(QMainWindow):
 
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.layout.addWidget(self.result_label)
+
+        # 创建 QLabel
+        upload_label = QLabel()
+        upload_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # 将图片设置为标签的内容
+        upload_label.setPixmap(QPixmap(CommonUtil.get_resource_path(FsConstants.UPLOAD_IMAGE_FULL_PATH)))
+        self.layout.addWidget(upload_label)
+
         # 添加垂直间距
         self.layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 

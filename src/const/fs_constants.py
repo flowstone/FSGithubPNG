@@ -26,6 +26,7 @@ class FsConstants:
     APP_ICON_FULL_PATH = "resources/images/app.ico"
     APP_MINI_ICON_FULL_PATH = "resources/images/app_mini.ico"
     APP_BAR_ICON_FULL_PATH = "resources/images/app_bar.ico"
+    UPLOAD_IMAGE_FULL_PATH = "resources/images/upload.svg"
     AUTHOR_MAIL = "xueyao.me@gmail.com"
     AUTHOR_BLOG = "https://blog.xueyao.tech"
     AUTHOR_GITHUB = "https://github.com/flowstone"
