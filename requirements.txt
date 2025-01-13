@@ -1,0 +1,10 @@
+PySide6
+requests
+loguru
+nuitka
+pyinstaller
+certifi
+charset-normalizer
+idna
+urllib3
+wheel
