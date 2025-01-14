@@ -38,7 +38,8 @@ class UploadThread(QThread):
             original_name = self.file_path.split("/")[-1]
             extension = original_name.split(".")[-1]
             unique_name = f"{uuid.uuid4().hex}.{extension}"
-            target_path = f"{year}/{month}/{unique_name}"
+            base_folder = ConfigUtil.get_ini_github_base_folder()
+            target_path =f"{base_folder}/{year}/{month}/{unique_name}" if base_folder else f"{year}/{month}/{unique_name}"
 
             # 上传图片到 GitHub
             url = f"https://api.github.com/repos/{self.github_repo}/contents/{target_path}"

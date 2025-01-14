@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1b07890-3844-4ed3-bb6e-6b79d5dd295b" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/images/upload.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/const/fs_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/const/fs_constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/github_upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/github_upload.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/option_general.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/option_general.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/util/config_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/config_util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,17 +135,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/util/config_util.py</url>
-          <line>121</line>
+          <line>128</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/util/config_util.py</url>
-          <line>133</line>
+          <line>140</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/util/config_util.py</url>
-          <line>231</line>
+          <line>249</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>

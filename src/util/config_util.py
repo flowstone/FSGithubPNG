@@ -46,6 +46,13 @@ class ConfigUtil:
         config, _ = ConfigUtil.get_ini_config()
         return config.get("Github", "repo", fallback="")
 
+    @staticmethod
+    def get_ini_github_base_folder():
+        """
+        从 INI 文件加载 Github Repo
+        """
+        config, _ = ConfigUtil.get_ini_config()
+        return config.get("Github", "base_folder", fallback="")
 
     # 从 INI 文件读取 遮罩是否启用的配置
     @staticmethod
@@ -133,6 +140,17 @@ class ConfigUtil:
         # 更新配置值
         ConfigUtil.update_ini_line(ini_path, "Github", "repo", repo)
         logger.info(f"Github Repo 已更新为: {repo}")
+
+    @staticmethod
+    def set_ini_github_base_folder(repo):
+        """
+        将 应用字体加粗的启用状态写入到 INI 配置文件中，保留注释。
+        :param repo: str, True 表示启用 应用字体加粗，False 表示禁用。
+        """
+        config, ini_path = ConfigUtil.get_ini_config()
+        # 更新配置值
+        ConfigUtil.update_ini_line(ini_path, "Github", "base_folder", repo)
+        logger.info(f"Github 根目录已更新为: {repo}")
     # 从 INI 文件读取 遮罩是否启用的配置
     @staticmethod
     def set_ini_mini_mask_checked(enabled):

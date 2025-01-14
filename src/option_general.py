@@ -67,7 +67,12 @@ class OptionGeneral(QWidget):
         self.github_repo_input.setText(ConfigUtil.get_ini_github_repo())
         self.github_repo_input.setPlaceholderText("请输入 GitHub 仓库 (用户名/仓库名)")
         layout.addWidget(self.github_repo_input)
-        layout.addWidget(self.github_token_input)
+
+        layout.addWidget(QLabel("根目录:"))
+        self.github_base_input = QLineEdit()
+        self.github_base_input.setText(ConfigUtil.get_ini_github_base_folder())
+        self.github_base_input.setPlaceholderText("请输入图片根目录")
+        layout.addWidget(self.github_base_input)
         base_group_box.setLayout(layout)
         return base_group_box
 
@@ -247,6 +252,7 @@ class OptionGeneral(QWidget):
         """保存设置到 ini 文件"""
         github_token = self.github_token_input.text().strip()
         github_repo = self.github_repo_input.text().strip()
+        github_base_folder = self.github_base_input.text().strip()
         mask_enabled = self.mask_checkbox.isChecked()
         mini_enabled = self.float_ball_checkbox.isChecked()
         tray_menu_enabled = self.tray_menu_checkbox.isChecked()
@@ -254,6 +260,7 @@ class OptionGeneral(QWidget):
 
             ConfigUtil.set_ini_github_token(github_token)
             ConfigUtil.set_ini_github_repo(github_repo)
+            ConfigUtil.set_ini_github_base_folder(github_base_folder)
             ConfigUtil.set_ini_mini_mask_checked(mask_enabled)
             ConfigUtil.set_ini_mini_checked(mini_enabled)  # 将 悬浮球修改状态写入到配置文件
             ConfigUtil.set_ini_tray_menu_checked(tray_menu_enabled)  # 将 托盘图标修改的状态写入到配置文件
