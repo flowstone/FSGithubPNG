@@ -8,14 +8,14 @@
 基础代码基于【[FS-Tool-Pro](https://github.com/flowstone/FS-Tool-Pro)】: https://github.com/flowstone/FS-Tool-Pro
 
 ### 应用界面
-![](https://raw.githubusercontent.com/flowstone/FSGithubPNG/main/preview/1.png)
+<img src="https://raw.githubusercontent.com/flowstone/FSGithubPNG/main/preview/1.png" alt="Example" width="600">
+<img src="https://raw.githubusercontent.com/flowstone/FSGithubPNG/main/preview/2.png" alt="Example" width="600">
 
-![](https://raw.githubusercontent.com/flowstone/FSGithubPNG/main/preview/2.png)
 
 ### 📜 许可证
 
-本项目使用 [Apache 2.0 许可证](https://github.com/flowstone/FS-Tool-Pro/blob/main/LICENSE)。  
-您可以在符合许可证要求的情况下自由使用本项目代码。更多详情请参阅 [LICENSE 文件](https://github.com/flowstone/FS-Tool-Pro/blob/main/LICENSE)。
+本项目使用 [Apache 2.0 许可证](https://github.com/flowstone/FSGithubPNG/blob/main/LICENSE)。  
+您可以在符合许可证要求的情况下自由使用本项目代码。更多详情请参阅 [LICENSE 文件](https://github.com/flowstone/FSGithubPNG/blob/main/LICENSE)。
 
 
 
