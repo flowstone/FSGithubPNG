@@ -8,7 +8,8 @@ class FsConstants:
     APP_WINDOW_WIDTH = 300
     APP_WINDOW_HEIGHT = 300
     APP_WINDOW_TITLE = "FSGithubPNG"
-
+    VERSION = "0.1.1"
+    COPYRIGHT_INFO = f"© 2025 {APP_WINDOW_TITLE}"
     # 悬浮球相关常量
     APP_MINI_SIZE = 80
     APP_MINI_WINDOW_TITLE = ""
@@ -30,8 +31,9 @@ class FsConstants:
     AUTHOR_MAIL = "xueyao.me@gmail.com"
     AUTHOR_BLOG = "https://blog.xueyao.tech"
     AUTHOR_GITHUB = "https://github.com/flowstone"
-    PROJECT_ADDRESS = "https://github.com/flowstone/FS-Tool"
+    PROJECT_ADDRESS = "https://github.com/flowstone/FSGithubPNG"
     BASE_QSS_PATH = "resources/qss/base.qss"
+    LICENSE_FILE_PATH = "resources/txt/LICENSE"
 
 
 

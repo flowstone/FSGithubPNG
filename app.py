@@ -41,7 +41,10 @@ from src.const.fs_constants import FsConstants
 import  os
 
 
+# 配置 loguru 日志输出（可选）
+logger.add(f"{CommonUtil.get_external_path()}/error.log", rotation="10 MB", retention="10 days", level="ERROR")
 
+@logger.catch
 def main():
     app = QApplication(sys.argv)
 
