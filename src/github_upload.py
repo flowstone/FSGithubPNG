@@ -12,19 +12,20 @@ from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
 
 from src.const.fs_constants import FsConstants
 from src.util.common_util import CommonUtil
-from src.util.config_util import ConfigUtil
-
+from src.util.config_manager import ConfigManager
+from loguru import logger
 from src.widget.custom_progress_widget import CustomProgressBar
 
 
 class UploadThread(QThread):
     upload_finished = Signal(str)  # 信号用于通知上传结果
 
-    def __init__(self, file_path, github_token, github_repo):
+    def __init__(self, file_path, github_token, github_repo, github_root_folder):
         super().__init__()
         self.file_path = file_path
         self.github_token = github_token
         self.github_repo = github_repo
+        self.github_root_folder = github_root_folder
 
     def run(self):
         """上传图片到 GitHub"""
@@ -38,7 +39,7 @@ class UploadThread(QThread):
             original_name = self.file_path.split("/")[-1]
             extension = original_name.split(".")[-1]
             unique_name = f"{uuid.uuid4().hex}.{extension}"
-            base_folder = ConfigUtil.get_ini_github_base_folder()
+            base_folder = self.github_root_folder
             target_path =f"{base_folder}/{year}/{month}/{unique_name}" if base_folder else f"{year}/{month}/{unique_name}"
 
             # 上传图片到 GitHub
@@ -58,10 +59,13 @@ class UploadThread(QThread):
 
             if response.status_code == 201:
                 download_url = response.json().get("content").get("download_url")
+                logger.info(f"上传成功！图片外链：{download_url}")
                 self.upload_finished.emit(f"上传成功！图片外链：\n{download_url}")
             else:
+                logger.warning(f"上传失败！{response.json().get('message')}")
                 self.upload_finished.emit(f"上传失败！\n{response.json().get('message')}")
         except Exception as e:
+            logger.error(f"发生错误：{str(e)}")
             self.upload_finished.emit(f"发生错误：\n{str(e)}")
 
 
@@ -70,10 +74,12 @@ class GitHubImageUploader(QMainWindow):
         super().__init__()
         self.setWindowTitle("GitHub 图床")
         self.setGeometry(300, 200, 600, 400)
-
+        self.config_manager = ConfigManager()
+        self.config_manager.config_updated.connect(self.on_config_updated)
         # 初始化 GitHub 配置
-        self.github_token = ConfigUtil.get_ini_github_token()
-        self.github_repo = ConfigUtil.get_ini_github_repo()
+        self.github_token = self.config_manager.get_config(ConfigManager.GITHUB_TOKEN_KEY)
+        self.github_repo = self.config_manager.get_config(ConfigManager.GITHUB_REPO_KEY)
+        self.github_root_folder = self.config_manager.get_config(ConfigManager.GITHUB_ROOT_FOLDER_KEY)
 
         # 设置拖拽支持
         self.setAcceptDrops(True)
@@ -134,14 +140,16 @@ class GitHubImageUploader(QMainWindow):
     def upload_image(self, file_path):
         """启动上传线程"""
         if not self.github_token or not self.github_repo:
+            logger.info("请先在设置中配置 GitHub Token 和仓库信息！")
             self.result_display.setText("请先在设置中配置 GitHub Token 和仓库信息！")
             return
 
         # 显示正在上传
         self.result_display.setText("正在上传，请稍候...")
+        logger.info("正在上传，请稍候...")
         self.progress_bar.set_range(0,0)
         # 创建并启动上传线程
-        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo)
+        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo, self.github_root_folder)
         self.upload_thread.upload_finished.connect(self.display_result)
         self.upload_thread.start()
         self.progress_bar.show()
@@ -150,6 +158,14 @@ class GitHubImageUploader(QMainWindow):
         """显示上传结果"""
         self.progress_bar.hide()
         self.result_display.setText(result)
+
+    def on_config_updated(self, key, value):
+        if key == ConfigManager.GITHUB_TOKEN_KEY:
+            self.github_token = value
+        elif key == ConfigManager.GITHUB_REPO_KEY:
+            self.github_repo = value
+        elif key == ConfigManager.GITHUB_ROOT_FOLDER_KEY:
+            self.github_root_folder = value
 
 
 if __name__ == "__main__":

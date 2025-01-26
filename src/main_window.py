@@ -10,7 +10,6 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSystemTrayIcon
 from PySide6.QtGui import QIcon, Qt, QDragEnterEvent, QDropEvent
 
 from src.github_upload import GitHubImageUploader
-from src.util.config_util import ConfigUtil
 from src.widget.app_mini import FloatingBall
 from loguru import logger
 from src.util.common_util import CommonUtil
