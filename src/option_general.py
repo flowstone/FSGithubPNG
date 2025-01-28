@@ -8,16 +8,17 @@ import os
 import sys
 import subprocess
 
+from fs_base.config_manager import ConfigManager
+from fs_base.message_util import MessageUtil
+from fs_base.widget import MenuWindow, TransparentTextBox
+
 from src.const.fs_constants import FsConstants
 from src.util.common_util import CommonUtil
 
-from src.util.config_manager import ConfigManager
-from src.util.message_util import MessageUtil
-from src.widget.menu_window_widget import MenuWindowWidget
-from src.widget.transparent_textbox_widget import TransparentTextBox
 
 
-class OptionGeneral(MenuWindowWidget):
+
+class OptionGeneral(MenuWindow):
 
     def __init__(self):
         super().__init__()
@@ -62,17 +63,17 @@ class OptionGeneral(MenuWindowWidget):
         layout.addWidget(QLabel("Github Token:"))
         self.github_token_input = QLineEdit()
         self.github_token_input.setEchoMode(QLineEdit.EchoMode.PasswordEchoOnEdit)
-        self.github_token_input.setText(self.config_manager.get_config(ConfigManager.GITHUB_TOKEN_KEY))
+        self.github_token_input.setText(self.config_manager.get_config(FsConstants.GITHUB_TOKEN_KEY))
         layout.addWidget(self.github_token_input)
         layout.addWidget(QLabel("GitHub 仓库:"))
         self.github_repo_input = QLineEdit()
-        self.github_repo_input.setText(self.config_manager.get_config(ConfigManager.GITHUB_REPO_KEY))
+        self.github_repo_input.setText(self.config_manager.get_config(FsConstants.GITHUB_REPO_KEY))
         self.github_repo_input.setPlaceholderText("请输入 GitHub 仓库 (用户名/仓库名)")
         layout.addWidget(self.github_repo_input)
 
         layout.addWidget(QLabel("根目录:"))
         self.github_base_input = QLineEdit()
-        self.github_base_input.setText(self.config_manager.get_config(ConfigManager.GITHUB_ROOT_FOLDER_KEY))
+        self.github_base_input.setText(self.config_manager.get_config(FsConstants.GITHUB_ROOT_FOLDER_KEY))
         self.github_base_input.setPlaceholderText("请输入图片根目录")
         layout.addWidget(self.github_base_input)
         base_group_box.setLayout(layout)
@@ -86,13 +87,13 @@ class OptionGeneral(MenuWindowWidget):
         # 遮罩动画复选框
         self.mask_checkbox = QCheckBox("阴影动画")
         layout.addWidget(self.mask_checkbox)
-        self.mask_checkbox.setChecked(self.config_manager.get_config(ConfigManager.APP_MINI_MASK_CHECKED_KEY))
+        self.mask_checkbox.setChecked(self.config_manager.get_config(FsConstants.APP_MINI_MASK_CHECKED_KEY))
 
         # 吸引灯复选框
         self.breathing_light_checkbox = QCheckBox("吸引灯动画")
         layout.addWidget(self.breathing_light_checkbox)
         self.breathing_light_checkbox.setChecked(
-            self.config_manager.get_config(ConfigManager.APP_MINI_BREATHING_LIGHT_CHECKED_KEY))
+            self.config_manager.get_config(FsConstants.APP_MINI_BREATHING_LIGHT_CHECKED_KEY))
 
         # 悬浮球设置
         self.float_ball_checkbox = QCheckBox("设置悬浮球")
@@ -102,10 +103,10 @@ class OptionGeneral(MenuWindowWidget):
         self.float_ball_hide_widget = self.create_float_ball_widget()
         layout.addWidget(self.float_ball_hide_widget)
 
-        if self.config_manager.get_config(ConfigManager.APP_MINI_CHECKED_KEY):
+        if self.config_manager.get_config(FsConstants.APP_MINI_CHECKED_KEY):
             self.float_ball_checkbox.setChecked(True)
-            self.slider.setValue(self.config_manager.get_config(ConfigManager.APP_MINI_SIZE_KEY))
-            self.float_ball_path_input.setText(self.config_manager.get_config(ConfigManager.APP_MINI_IMAGE_KEY))
+            self.slider.setValue(self.config_manager.get_config(FsConstants.APP_MINI_SIZE_KEY))
+            self.float_ball_path_input.setText(self.config_manager.get_config(FsConstants.APP_MINI_IMAGE_KEY))
 
         # 托盘图标设置
         self.tray_menu_checkbox = QCheckBox("设置托盘图标")
@@ -114,9 +115,9 @@ class OptionGeneral(MenuWindowWidget):
 
         self.tray_menu_widget = self.create_tray_menu_widget()
         layout.addWidget(self.tray_menu_widget)
-        if self.config_manager.get_config(ConfigManager.APP_TRAY_MENU_CHECKED_KEY):
+        if self.config_manager.get_config(FsConstants.APP_TRAY_MENU_CHECKED_KEY):
             self.tray_menu_checkbox.setChecked(True)
-            self.tray_menu_path_input.setText(self.config_manager.get_config(ConfigManager.APP_TRAY_MENU_IMAGE_KEY))
+            self.tray_menu_path_input.setText(self.config_manager.get_config(FsConstants.APP_TRAY_MENU_IMAGE_KEY))
 
         group_box.setLayout(layout)
         return group_box
@@ -266,22 +267,22 @@ class OptionGeneral(MenuWindowWidget):
         tray_menu_enabled = self.tray_menu_checkbox.isChecked()
         try:
 
-            self.config_manager.set_config(ConfigManager.GITHUB_TOKEN_KEY, github_token)
-            self.config_manager.set_config(ConfigManager.GITHUB_REPO_KEY, github_repo)
-            self.config_manager.set_config(ConfigManager.GITHUB_ROOT_FOLDER_KEY, github_base_folder)
+            self.config_manager.set_config(FsConstants.GITHUB_TOKEN_KEY, github_token)
+            self.config_manager.set_config(FsConstants.GITHUB_REPO_KEY, github_repo)
+            self.config_manager.set_config(FsConstants.GITHUB_ROOT_FOLDER_KEY, github_base_folder)
 
-            self.config_manager.set_config(ConfigManager.APP_MINI_MASK_CHECKED_KEY, mask_enabled)
-            self.config_manager.set_config(ConfigManager.APP_MINI_BREATHING_LIGHT_CHECKED_KEY,
+            self.config_manager.set_config(FsConstants.APP_MINI_MASK_CHECKED_KEY, mask_enabled)
+            self.config_manager.set_config(FsConstants.APP_MINI_BREATHING_LIGHT_CHECKED_KEY,
                                            self.breathing_light_checkbox.isChecked())
-            self.config_manager.set_config(ConfigManager.APP_MINI_CHECKED_KEY, mini_enabled)  # 将 悬浮球修改状态写入到配置文件
-            self.config_manager.set_config(ConfigManager.APP_TRAY_MENU_CHECKED_KEY,
+            self.config_manager.set_config(FsConstants.APP_MINI_CHECKED_KEY, mini_enabled)  # 将 悬浮球修改状态写入到配置文件
+            self.config_manager.set_config(FsConstants.APP_TRAY_MENU_CHECKED_KEY,
                                            tray_menu_enabled)  # 将 托盘图标修改的状态写入到配置文件
             if mini_enabled:
-                self.config_manager.set_config(ConfigManager.APP_MINI_SIZE_KEY, self.slider_value)
-                self.config_manager.set_config(ConfigManager.APP_MINI_IMAGE_KEY,
+                self.config_manager.set_config(FsConstants.APP_MINI_SIZE_KEY, self.slider_value)
+                self.config_manager.set_config(FsConstants.APP_MINI_IMAGE_KEY,
                                                self.float_ball_path_input.text().strip())
             if tray_menu_enabled:
-                self.config_manager.set_config(ConfigManager.APP_TRAY_MENU_IMAGE_KEY,
+                self.config_manager.set_config(FsConstants.APP_TRAY_MENU_IMAGE_KEY,
                                                self.tray_menu_path_input.text().strip())
 
             MessageUtil.show_success_message("设置已成功保存！")

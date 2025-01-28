@@ -9,12 +9,12 @@ from PySide6.QtWidgets import (
     QSizePolicy
 )
 from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
+from fs_base.config_manager import ConfigManager
+from fs_base.widget import CustomProgressBar
 
 from src.const.fs_constants import FsConstants
 from src.util.common_util import CommonUtil
-from src.util.config_manager import ConfigManager
 from loguru import logger
-from src.widget.custom_progress_widget import CustomProgressBar
 
 
 class UploadThread(QThread):
@@ -77,9 +77,9 @@ class GitHubImageUploader(QMainWindow):
         self.config_manager = ConfigManager()
         self.config_manager.config_updated.connect(self.on_config_updated)
         # 初始化 GitHub 配置
-        self.github_token = self.config_manager.get_config(ConfigManager.GITHUB_TOKEN_KEY)
-        self.github_repo = self.config_manager.get_config(ConfigManager.GITHUB_REPO_KEY)
-        self.github_root_folder = self.config_manager.get_config(ConfigManager.GITHUB_ROOT_FOLDER_KEY)
+        self.github_token = self.config_manager.get_config(FsConstants.GITHUB_TOKEN_KEY)
+        self.github_repo = self.config_manager.get_config(FsConstants.GITHUB_REPO_KEY)
+        self.github_root_folder = self.config_manager.get_config(FsConstants.GITHUB_ROOT_FOLDER_KEY)
 
         # 设置拖拽支持
         self.setAcceptDrops(True)
@@ -160,11 +160,11 @@ class GitHubImageUploader(QMainWindow):
         self.result_display.setText(result)
 
     def on_config_updated(self, key, value):
-        if key == ConfigManager.GITHUB_TOKEN_KEY:
+        if key == FsConstants.GITHUB_TOKEN_KEY:
             self.github_token = value
-        elif key == ConfigManager.GITHUB_REPO_KEY:
+        elif key == FsConstants.GITHUB_REPO_KEY:
             self.github_repo = value
-        elif key == ConfigManager.GITHUB_ROOT_FOLDER_KEY:
+        elif key == FsConstants.GITHUB_ROOT_FOLDER_KEY:
             self.github_root_folder = value
 
 
