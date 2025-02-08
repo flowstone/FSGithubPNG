@@ -61,6 +61,12 @@ class UploadThread(QThread):
                 download_url = response.json().get("content").get("download_url")
                 logger.info(f"上传成功！图片外链：{download_url}")
                 self.upload_finished.emit(f"上传成功！图片外链：\n{download_url}")
+
+                cdn_url = download_url.replace("https://raw.githubusercontent.com/",
+                                               "https://cdn.jsdelivr.net/gh/").replace(f"{self.github_repo}/", f"{self.github_repo}@")
+                logger.info(f"CDN 加速jsDelivr：\n{cdn_url}")
+                self.upload_finished.emit(f"CDN 加速jsDelivr：\n{cdn_url}")
+
             else:
                 logger.warning(f"上传失败！{response.json().get('message')}")
                 self.upload_finished.emit(f"上传失败！\n{response.json().get('message')}")
