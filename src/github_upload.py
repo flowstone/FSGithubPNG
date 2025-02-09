@@ -110,9 +110,12 @@ class GitHubImageUploader(QMainWindow):
         # 上传结果显示
         self.result_label = QLabel("拖拽图片到窗口内，或双击选择图片上传", self)
         self.result_label.setStyleSheet("font-size: 16px; font-weight: bold;  padding: 10px;")
-
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        remark_label = QLabel("🧚‍♀️ 新增剪贴板图片上传，使用右键或Ctrl+V", self)
+        remark_label.setStyleSheet("color: gray;")
+
         self.layout.addWidget(self.result_label)
+        self.layout.addWidget(remark_label)
 
         # 创建 QLabel
         upload_label = QLabel()
