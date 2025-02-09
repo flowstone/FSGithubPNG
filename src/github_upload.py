@@ -3,6 +3,10 @@ import requests
 import base64
 import datetime
 import uuid
+import tempfile
+import os
+from PySide6.QtGui import QShortcut, QKeySequence, QImage
+from PySide6.QtWidgets import QApplication, QMenu
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QLabel, QFileDialog, QTextEdit, QInputDialog, QWidget, QSpacerItem,
@@ -20,12 +24,14 @@ from loguru import logger
 class UploadThread(QThread):
     upload_finished = Signal(str)  # 信号用于通知上传结果
 
-    def __init__(self, file_path, github_token, github_repo, github_root_folder):
+    def __init__(self, file_path, github_token, github_repo, github_root_folder,  is_temp_file=False):
         super().__init__()
         self.file_path = file_path
         self.github_token = github_token
         self.github_repo = github_repo
         self.github_root_folder = github_root_folder
+        self.is_temp_file = is_temp_file  # 新增参数
+
 
     def run(self):
         """上传图片到 GitHub"""
@@ -64,7 +70,7 @@ class UploadThread(QThread):
 
                 cdn_url = download_url.replace("https://raw.githubusercontent.com/",
                                                "https://cdn.jsdelivr.net/gh/").replace(f"{self.github_repo}/", f"{self.github_repo}@")
-                logger.info(f"CDN 加速jsDelivr：\n{cdn_url}")
+                logger.info(f"CDN 加速jsDelivr：{cdn_url}")
                 self.upload_finished.emit(f"CDN 加速jsDelivr：\n{cdn_url}")
 
             else:
@@ -73,7 +79,13 @@ class UploadThread(QThread):
         except Exception as e:
             logger.error(f"发生错误：{str(e)}")
             self.upload_finished.emit(f"发生错误：\n{str(e)}")
-
+        finally:
+            # 如果是临时文件则删除
+            if self.is_temp_file:
+                try:
+                    os.remove(self.file_path)
+                except Exception as e:
+                    logger.error(f"删除临时文件失败: {str(e)}")
 
 class GitHubImageUploader(QMainWindow):
     def __init__(self):
@@ -124,12 +136,49 @@ class GitHubImageUploader(QMainWindow):
 
         # 上传线程
         self.upload_thread = None
+        # 添加快捷键 Ctrl+V 用于粘贴剪贴板图片
+        QShortcut(QKeySequence("Ctrl+V"), self).activated.connect(self.upload_from_clipboard)
 
+    def upload_from_clipboard(self):
+        """从剪贴板上传图片"""
+        try:
+            clipboard = QApplication.clipboard()
+            image = clipboard.image()
+
+            if not image.isNull():
+                try:
+                    # 创建临时文件
+                    with tempfile.NamedTemporaryFile(
+                            suffix=".png", delete=False
+                    ) as temp_file:
+                        temp_path = temp_file.name
+
+                    # 保存图片到临时文件
+                    image.save(temp_path, "PNG")
+                    logger.info(f"已从剪贴板保存临时文件: {temp_path}")
+
+                    # 启动上传线程并标记为临时文件
+                    self.upload_image(temp_path, is_temp_file=True)
+
+                except Exception as e:
+                    logger.error(f"保存剪贴板图片失败: {str(e)}")
+                    self.result_display.setText(f"错误: {str(e)}")
+            else:
+                self.result_display.setText("剪贴板中没有检测到图片！")
+                logger.warning("剪贴板内容不是图片")
+        except Exception as e:
+            logger.error(f"从剪贴板读取图片失败: {str(e)}")
+            self.result_display.setText(f"错误: {str(e)}")
     def dragEnterEvent(self, event: QDragEnterEvent):
         """处理拖拽进入事件"""
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        paste_action = menu.addAction("粘贴剪贴板图片")
+        paste_action.triggered.connect(self.upload_from_clipboard)
+        menu.exec(event.globalPos())
     def dropEvent(self, event: QDropEvent):
         """处理拖拽释放事件"""
         file_urls = event.mimeData().urls()
@@ -143,7 +192,7 @@ class GitHubImageUploader(QMainWindow):
         if file_path:
             self.upload_image(file_path)
 
-    def upload_image(self, file_path):
+    def upload_image(self, file_path, is_temp_file=False):
         """启动上传线程"""
         if not self.github_token or not self.github_repo:
             logger.info("请先在设置中配置 GitHub Token 和仓库信息！")
@@ -155,7 +204,7 @@ class GitHubImageUploader(QMainWindow):
         logger.info("正在上传，请稍候...")
         self.progress_bar.set_range(0,0)
         # 创建并启动上传线程
-        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo, self.github_root_folder)
+        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo, self.github_root_folder, is_temp_file)
         self.upload_thread.upload_finished.connect(self.display_result)
         self.upload_thread.start()
         self.progress_bar.show()
