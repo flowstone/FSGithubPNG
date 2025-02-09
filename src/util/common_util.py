@@ -20,3 +20,8 @@ class CommonUtil(BaseUtil):
         # SAVE_FILE_PATH_WIN = "C:\\FSGithubPNG\\"
         # SAVE_FILE_PATH_MAC = "~/FSGithubPNG/"
         return FsConstants.SAVE_FILE_PATH_WIN if CommonUtil.check_win_os() else CommonUtil.get_mac_user_path()
+
+    @staticmethod
+    def get_current_time_str() -> str:
+        # 获得当前时间字符串
+        return datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")

@@ -55,12 +55,15 @@ class FsConstants(AppConstants):
     GITHUB_TOKEN_KEY = "github.token"
     GITHUB_REPO_KEY = "github.repo"
     GITHUB_ROOT_FOLDER_KEY = "github.root_folder"
-
+    GITHUB_CDN_CHECKED_KEY = "github.cdn_checked"
+    GITHUB_MARKDOWN_CHECKED_KEY = "github.markdown_checked"
     # 默认值
     NEW_CONFIG = {
         GITHUB_TOKEN_KEY: "",
         GITHUB_REPO_KEY: "",
         GITHUB_ROOT_FOLDER_KEY: "",
+        GITHUB_CDN_CHECKED_KEY: False,
+        GITHUB_MARKDOWN_CHECKED_KEY: False,
     }
 
     AppConstants.DEFAULT_CONFIG = {**AppConstants.DEFAULT_CONFIG, **NEW_CONFIG}
@@ -69,6 +72,8 @@ class FsConstants(AppConstants):
         GITHUB_TOKEN_KEY: str,
         GITHUB_REPO_KEY: str,
         GITHUB_ROOT_FOLDER_KEY: str,
+        GITHUB_CDN_CHECKED_KEY: bool,
+        GITHUB_MARKDOWN_CHECKED_KEY: bool,
     }
     AppConstants.CONFIG_TYPES = {**AppConstants.CONFIG_TYPES, **NEW_CONFIG_TYPES}
     ################### INI设置 #####################

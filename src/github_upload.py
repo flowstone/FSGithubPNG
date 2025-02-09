@@ -24,12 +24,15 @@ from loguru import logger
 class UploadThread(QThread):
     upload_finished = Signal(str)  # 信号用于通知上传结果
 
-    def __init__(self, file_path, github_token, github_repo, github_root_folder,  is_temp_file=False):
+    def __init__(self, file_path, github_token, github_repo, github_root_folder,
+                 github_cdn_checked=False,github_markdown_checked=False, is_temp_file=False):
         super().__init__()
         self.file_path = file_path
         self.github_token = github_token
         self.github_repo = github_repo
         self.github_root_folder = github_root_folder
+        self.github_cdn_checked = github_cdn_checked
+        self.github_markdown_checked = github_markdown_checked
         self.is_temp_file = is_temp_file  # 新增参数
 
 
@@ -44,7 +47,7 @@ class UploadThread(QThread):
             # 生成唯一文件名
             original_name = self.file_path.split("/")[-1]
             extension = original_name.split(".")[-1]
-            unique_name = f"{uuid.uuid4().hex}.{extension}"
+            unique_name = f"{CommonUtil.get_current_time_str()}.{extension}"
             base_folder = self.github_root_folder
             target_path =f"{base_folder}/{year}/{month}/{unique_name}" if base_folder else f"{year}/{month}/{unique_name}"
 
@@ -65,13 +68,21 @@ class UploadThread(QThread):
 
             if response.status_code == 201:
                 download_url = response.json().get("content").get("download_url")
-                logger.info(f"上传成功！图片外链：{download_url}")
-                self.upload_finished.emit(f"上传成功！图片外链：\n{download_url}")
+                if self.github_cdn_checked:
+                    image_url = download_url.replace("https://raw.githubusercontent.com/",
+                                                   "https://cdn.jsdelivr.net/gh/").replace(f"{self.github_repo}/",
+                                                                                           f"{self.github_repo}@")
+                    logger.info(f"CDN 加速jsDelivr：{image_url}")
+                else:
+                    image_url = download_url
+                    logger.info(f"上传成功！图片外链：{image_url}")
 
-                cdn_url = download_url.replace("https://raw.githubusercontent.com/",
-                                               "https://cdn.jsdelivr.net/gh/").replace(f"{self.github_repo}/", f"{self.github_repo}@")
-                logger.info(f"CDN 加速jsDelivr：{cdn_url}")
-                self.upload_finished.emit(f"CDN 加速jsDelivr：\n{cdn_url}")
+                if self.github_markdown_checked:
+                    image_url = f"![{original_name}]({image_url})"
+                    logger.info(f"上传成功！图片外链,Markdown 语法：{image_url}")
+
+                self.upload_finished.emit(f"上传成功！图片外链：\n{image_url}")
+
 
             else:
                 logger.warning(f"上传失败！{response.json().get('message')}")
@@ -98,6 +109,8 @@ class GitHubImageUploader(QMainWindow):
         self.github_token = self.config_manager.get_config(FsConstants.GITHUB_TOKEN_KEY)
         self.github_repo = self.config_manager.get_config(FsConstants.GITHUB_REPO_KEY)
         self.github_root_folder = self.config_manager.get_config(FsConstants.GITHUB_ROOT_FOLDER_KEY)
+        self.github_cdn_checked = self.config_manager.get_config(FsConstants.GITHUB_CDN_CHECKED_KEY)
+        self.github_markdown_checked = self.config_manager.get_config(FsConstants.GITHUB_MARKDOWN_CHECKED_KEY)
 
         # 设置拖拽支持
         self.setAcceptDrops(True)
@@ -207,7 +220,8 @@ class GitHubImageUploader(QMainWindow):
         logger.info("正在上传，请稍候...")
         self.progress_bar.set_range(0,0)
         # 创建并启动上传线程
-        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo, self.github_root_folder, is_temp_file)
+        self.upload_thread = UploadThread(file_path, self.github_token, self.github_repo, self.github_root_folder,
+                                          self.github_cdn_checked, self.github_markdown_checked, is_temp_file)
         self.upload_thread.upload_finished.connect(self.display_result)
         self.upload_thread.start()
         self.progress_bar.show()

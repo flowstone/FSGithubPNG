@@ -76,6 +76,19 @@ class OptionGeneral(MenuWindow):
         self.github_base_input.setText(self.config_manager.get_config(FsConstants.GITHUB_ROOT_FOLDER_KEY))
         self.github_base_input.setPlaceholderText("请输入图片根目录")
         layout.addWidget(self.github_base_input)
+
+        # CDN加速复选框
+        self.cdn_checkbox = QCheckBox("CDN加速(jsDelivr)")
+        self.cdn_checkbox.setChecked(self.config_manager.get_config(FsConstants.GITHUB_CDN_CHECKED_KEY))
+
+        layout.addWidget(self.cdn_checkbox)
+
+        # MarkDown格式复选框
+        self.markdown_checkbox = QCheckBox("MarkDown格式")
+        self.markdown_checkbox.setChecked(self.config_manager.get_config(FsConstants.GITHUB_MARKDOWN_CHECKED_KEY))
+
+        layout.addWidget(self.markdown_checkbox)
+
         base_group_box.setLayout(layout)
         return base_group_box
 
@@ -262,6 +275,7 @@ class OptionGeneral(MenuWindow):
         github_token = self.github_token_input.text().strip()
         github_repo = self.github_repo_input.text().strip()
         github_base_folder = self.github_base_input.text().strip()
+
         mask_enabled = self.mask_checkbox.isChecked()
         mini_enabled = self.float_ball_checkbox.isChecked()
         tray_menu_enabled = self.tray_menu_checkbox.isChecked()
@@ -270,6 +284,8 @@ class OptionGeneral(MenuWindow):
             self.config_manager.set_config(FsConstants.GITHUB_TOKEN_KEY, github_token)
             self.config_manager.set_config(FsConstants.GITHUB_REPO_KEY, github_repo)
             self.config_manager.set_config(FsConstants.GITHUB_ROOT_FOLDER_KEY, github_base_folder)
+            self.config_manager.set_config(FsConstants.GITHUB_CDN_CHECKED_KEY, self.cdn_checkbox.isChecked())
+            self.config_manager.set_config(FsConstants.GITHUB_MARKDOWN_CHECKED_KEY, self.markdown_checkbox.isChecked())
 
             self.config_manager.set_config(FsConstants.APP_MINI_MASK_CHECKED_KEY, mask_enabled)
             self.config_manager.set_config(FsConstants.APP_MINI_BREATHING_LIGHT_CHECKED_KEY,
