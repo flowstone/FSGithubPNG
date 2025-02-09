@@ -9,4 +9,4 @@ idna
 urllib3
 wheel
 pillow
-fs-base==0.1.0
+fs-base
