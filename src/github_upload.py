@@ -78,7 +78,7 @@ class UploadThread(QThread):
                     logger.info(f"上传成功！图片外链：{image_url}")
 
                 if self.github_markdown_checked:
-                    image_url = f"![{original_name}]({image_url})"
+                    image_url = f"![{unique_name}]({image_url})"
                     logger.info(f"上传成功！图片外链,Markdown 语法：{image_url}")
 
                 self.upload_finished.emit(f"上传成功！图片外链：\n{image_url}")

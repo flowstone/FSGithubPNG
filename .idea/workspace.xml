@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1b07890-3844-4ed3-bb6e-6b79d5dd295b" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/sync.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/FSGithubPNG.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FSGithubPNG.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.ini" beforeDir="false" afterPath="$PROJECT_DIR$/app.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +47,7 @@
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "/Users/simonxue/Code/PycharmProjects/FSGithubPNG/.github/workflows"
   }
 }]]></component>
@@ -132,9 +134,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.app" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.github_upload" />
-        <item itemvalue="Python.app" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.github_upload" />
       </list>
